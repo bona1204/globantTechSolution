@@ -3,10 +3,10 @@ services:
     image: mysql:8
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: your_password
+      MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: globant_db
-      MYSQL_USER: globant_user
-      MYSQL_PASSWORD: your_password
+      MYSQL_USER: sebastianBonilla
+      MYSQL_PASSWORD: root
     ports:
       - "3306:3306"
 
@@ -20,8 +20,8 @@ services:
       DB_HOST: db
       DB_PORT: 3306
       DB_NAME: globant_db
-      DB_USER: globant_user
-      DB_PASS: your_password
+      DB_USER: sebastianBonilla
+      DB_PASS: root
 
 volumes:
   mysql_data:
