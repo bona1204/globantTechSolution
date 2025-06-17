@@ -1,7 +1,10 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
 import time
 import os
+
+Base = declarative_base()
 
 DB_HOST = os.getenv("DB_HOST", "localhost")
 DB_PORT = os.getenv("DB_PORT", "3306")
@@ -11,7 +14,6 @@ DB_PASS = os.getenv("DB_PASS", "your_password")
 
 DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
-# Reintentos hasta que MySQL esté listo
 MAX_RETRIES = 10
 WAIT_SECONDS = 3
 

@@ -1,7 +1,5 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
-from sqlalchemy.ext.declarative import declarative_base
-
-Base = declarative_base()
+from app.db import Base
 
 class Department(Base):
     __tablename__ = "departments"

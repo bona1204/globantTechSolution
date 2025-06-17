@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+from sqlalchemy.sql import func, extract, case
 from app.db import SessionLocal
 from app.models import Department, Job, HiredEmployee
 from app.crud import load_csv_to_table
@@ -26,3 +27,21 @@ def upload_csv(table_name: str, db: Session = Depends(get_db)):
     model, file_path = table_map[table_name]
     load_csv_to_table(db, file_path, model)
     return {"message": f"{table_name} loaded successfully"}
+
+@router.get("/report/hired_employees_by_quarter")
+def hired_employees_by_quarter(db: Session = Depends(get_db)):
+    query = db.query(
+        Department.department.label("department"),
+        Job.job.label("job"),
+        func.sum(case(((extract('quarter', HiredEmployee.datetime) == 1, 1)), else_=0)).label("Q1"),
+        func.sum(case(((extract('quarter', HiredEmployee.datetime) == 2, 1)), else_=0)).label("Q2"),
+        func.sum(case(((extract('quarter', HiredEmployee.datetime) == 3, 1)), else_=0)).label("Q3"),
+        func.sum(case(((extract('quarter', HiredEmployee.datetime) == 4, 1)), else_=0)).label("Q4"),
+    ).join(Department, Department.id == HiredEmployee.department_id
+    ).join(Job, Job.id == HiredEmployee.job_id
+    ).filter(func.extract("year", HiredEmployee.datetime) == 2021
+    ).group_by(Department.department, Job.job
+    ).having(func.count(HiredEmployee.id) > 0
+    ).order_by(Department.department, Job.job)
+    
+    return [dict(row._mapping) for row in query.all()]
