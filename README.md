@@ -2,13 +2,21 @@
 
 This project implements a local REST API using FastAPI and SQLAlchemy to handle the migration of data for three related tables: `departments`, `jobs`, and `hired_employees`.
 
+## Live Demo
+
+Production API available at:
+
+[https://globanttechsolution-production.up.railway.app/docs](https://globanttechsolution-production.up.railway.app/docs)
+
+
 ## Features
 
 - Receives historical data from CSV files.
-- Uploads this data to a SQL database (MySQL).
+- Uploads this data to a MySQL database.
 - Supports batch inserts (up to 1000 rows per request).
-- Automatically splits large files into multiple transactions if necessary.
-- Uses Docker containers for easy local setup.
+- Automatically splits large files into multiple transactions.
+- Uses Docker containers for easy local development.
+- Live deployment with Railway.
 
 ## Technologies Used
 
@@ -23,6 +31,17 @@ This project implements a local REST API using FastAPI and SQLAlchemy to handle 
 
 - Docker  
 - Docker Compose
+
+## Environment Variables
+
+Create a `.env` file with the following variables (example):
+
+```env
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=globant_db
+DB_USER=user
+DB_PASS=password
 
 ## Installation
 
