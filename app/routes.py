@@ -25,8 +25,12 @@ def upload_csv(table_name: str, db: Session = Depends(get_db)):
         return {"error": "Invalid table name"}
     
     model, file_path = table_map[table_name]
-    load_csv_to_table(db, file_path, model)
-    return {"message": f"{table_name} loaded successfully"}
+    result = load_csv_to_table(db, file_path, model)
+    return {
+        "message": f"{table_name} loaded successfully",
+        "inserted_rows": result["inserted"],
+        "skipped_duplicates": result["skipped_duplicates"]
+    }
 
 @router.get("/report/hired_employees_by_quarter")
 def hired_employees_by_quarter(db: Session = Depends(get_db)):
@@ -43,5 +47,20 @@ def hired_employees_by_quarter(db: Session = Depends(get_db)):
     ).group_by(Department.department, Job.job
     ).having(func.count(HiredEmployee.id) > 0
     ).order_by(Department.department, Job.job)
-    
+
+    return [dict(row._mapping) for row in query.all()]
+
+@router.get("/report/top_10_departments")
+def top_10_departments(db: Session = Depends(get_db)):
+    query = (
+        db.query(
+            Department.id.label("department_id"),
+            Department.department.label("department"),
+            func.count(HiredEmployee.id).label("total_hires")
+        )
+        .join(HiredEmployee, Department.id == HiredEmployee.department_id)
+        .filter(func.extract("year", HiredEmployee.datetime) == 2021)
+        .group_by(Department.id, Department.department)
+        .order_by(func.count(HiredEmployee.id).desc())
+    )
     return [dict(row._mapping) for row in query.all()]

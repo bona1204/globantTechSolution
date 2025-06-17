@@ -69,3 +69,27 @@ CSV files should not have a header row.
 The database schema is auto-generated on startup.
 
 hired_employees data is inserted in batches of up to 1000 records per insert. If a file has more than 1000 rows, it is split and processed in multiple chunks during the same request.
+
+## API Endpoints
+
+### Upload Historical Data
+
+**POST** `/upload/{table_name}`  
+Uploads historical data from a CSV file located in the `data/` folder.
+
+### Accepted values for `{table_name}`
+
+- `departments`
+- `jobs`
+- `hired_employees`
+
+
+### Report: Hires by Department and Job (per quarter)
+
+**GET** `/report/hired_employees_by_quarter`  
+Returns a summary of how many people were hired per department and job in each quarter of 2021.
+
+### Report: Top 10 Departments by Hires in 2021
+
+**GET** `/report/top_10_departments`  
+Returns the top 10 departments with the most hires in 2021.
